@@ -1,31 +1,27 @@
+use std::collections::HashMap;
+use std::io::ErrorKind;
+use serde::{Deserialize};
 
-use std::io::{Error};
-use std::net::{IpAddr, Ipv4Addr};
-use serde::Serialize;
-
-#[derive(Debug, Serialize)]
+#[derive(Debug, Deserialize)]
 pub struct Configuration {
-    address: IpAddr,
-    port: u16,
-    paths: Option<String>
+    address: Option<String>,
+    port: Option<u16>,
+    pages: Option<HashMap<String, String>>
 }
 
+pub fn load(filepath: &str) -> Result<Configuration, ErrorKind> {
 
-
-pub fn load(filepath: std::path) -> Result<Configuration, Error> {
-
-
-
-
-    let c: Configuration = Configuration {
-        address: IpAddr::from(Ipv4Addr::new(127, 0, 0, 1)),
-        port: 0,
-        paths: None,
+    let data_string = match std::fs::read_to_string(filepath) {
+        Ok(file) => file,
+        Err(error) => return Err(error.kind())
     };
 
-    Ok(c)
+    let config: Configuration = match toml::from_str(&data_string) {
+        Ok(config) => config,
+        Err(_) => return Err(ErrorKind::Other)
+    };
+
+    Ok(config)
 }
 
-pub fn create() {
-
-}
+// pub fn create() {}

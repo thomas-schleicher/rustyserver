@@ -9,8 +9,8 @@ use std::io::{BufRead, BufReader, Write};
 fn main() {
 
 
-
-
+    let config = config::load("config.toml").unwrap();
+    println!("{:?}", config);
 
     let address = "127.0.0.1:8888";
 
@@ -30,11 +30,13 @@ fn main() {
 
 fn handle_connection(mut stream: TcpStream) {
     let buf_reader = BufReader::new(&mut stream);
-    let _http_request: Vec<_> = buf_reader
+    let http_request: Vec<_> = buf_reader
         .lines()
         .map(|result| result.unwrap())
         .take_while(|line| !line.is_empty())
         .collect();
+
+    println!("{:?}", http_request);
 
     let status_line = "HTTP/1.1 200 OK";
     let contents = fs::read_to_string("index.html").unwrap();
