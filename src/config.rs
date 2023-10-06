@@ -10,6 +10,7 @@ struct ConfigurationForm {
     pages: Option<HashMap<String, String>>
 }
 
+
 #[derive(Debug)]
 pub struct Config {
     pub address: String,
